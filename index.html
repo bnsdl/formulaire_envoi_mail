@@ -4,18 +4,43 @@
     <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" href="librairies/style.css"/>
-    <script type="text/javascript" src="librairies/lib.js">
-
-    </script>
+    <script type="text/javascript" src="librairies/lib.js"></script>
   </head>
   <body>
-  <form method="post" action="send_mail.php">
-    <input name="name" type="text">
-    <input name="customer_mail" type="text">
-    <textarea name="content"></textarea>
-    <input type="submit" value="submit">
+  <form>
+    <label for="customer_name">Nom</label><input id="customer_name" name="customer_name" type="text"/>
+    <label for="customer_mail">Email</label><input id="customer_mail" name="customer_mail" type="text"/>
+    <label for="content">Contenu</label><textarea id="content" name="content"></textarea>
+    <button type="button" onclick="ajax()">Submit</button>
   </form>
+  <div id="response"></div>
 
 
   </body>
+  <script>
+
+      var customer_name = byId("customer_name");
+      var content = byId("content");
+      var header = byId("customer_mail");
+      var response = byId("response");
+
+      function ajax(){
+          if ( (customer_name.value == "") || (content.value == "") || (header.value == "") ) {
+              response.textContent = "Information(s) manquante(s), merci de renseigner tous les champs";
+          }
+          else {
+              var req = new XMLHttpRequest();
+              req.open('post', 'send_mail.php', true);
+              req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+              req.send("content=" + content.value + "&customer_name=" + customer_name.value + "&customer_mail=" + header.value);
+              req.onload = getDatas;
+          }
+      }
+
+      function getDatas(){
+          var data = JSON.parse(this.responseText);
+          response.textContent = data;
+      }
+
+  </script>
 </html>
